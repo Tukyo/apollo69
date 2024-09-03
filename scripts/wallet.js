@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         console.log("No wallet");
     }
 });
-
 // Function to connect wallet
 async function connect() {
     try {
@@ -66,7 +65,6 @@ async function connect() {
         showAlert('alert', 'Error connecting to wallet. Please try again.');
     }
 }
-
 // Function to check the chain ID
 async function checkChainId() {
     const chainId = await window.ethereum.request({ method: 'eth_chainId' });
@@ -106,7 +104,6 @@ async function checkChainId() {
         }
     }
 }
-
 // Function to handle account changes
 function handleAccountsChanged(accounts) {
     if (accounts.length === 0) {
@@ -115,7 +112,6 @@ function handleAccountsChanged(accounts) {
         updateWalletConnectButton(accounts[0]);
     }
 }
-
 // Function to handle wallet disconnection
 function handleDisconnect() {
     console.log('Wallet disconnected');
@@ -131,7 +127,6 @@ function handleDisconnect() {
         dismissTime: 4000
     });
 }
-
 // Subscribe to the wallet connection custom event
 document.addEventListener('walletConnected', function (event) {
     console.log('Wallet connected:', event.detail.accounts);
@@ -142,7 +137,6 @@ document.addEventListener('walletConnected', function (event) {
     // Set the wallet connection status to true
     isWalletConnected = true;
 });
-
 // Function to update the connect wallet button
 async function updateWalletConnectButton(address) {
     connectWalletButton.innerHTML = truncateAddress(address, 4);
@@ -159,50 +153,7 @@ async function updateWalletConnectButton(address) {
         }
     }
 }
-
-
 // Helper functions to truncate wallet addresses and ENS
 function truncateAddress(address, amount) {
     return `${address.slice(0, amount)}...${address.slice(-amount)}`;
 }
-
-
-
-// make it so the base input field redirects to [userinput]+https://www.base.org/names?claim=0xjoyful.base.eth - so, replace 0xjoyful with the user input
-// try to make it look nice somehow that is mobile friendly and not glitchy
-// document.addEventListener('DOMContentLoaded', () => {
-//     const ensInput = document.getElementById('ens-input');
-
-//     // Function to update the input value with the .base.eth suffix
-//     const updateInputValue = () => {
-//         const baseValue = ensInput.value.replace('.base.eth', '');
-//         ensInput.value = baseValue + '.base.eth';
-//         ensInput.setSelectionRange(baseValue.length, baseValue.length);
-//     };
-
-//     // Initial update to ensure the suffix is present
-//     updateInputValue();
-
-//     ensInput.addEventListener('input', () => {
-//         // Prevent the user from deleting the suffix
-//         if (!ensInput.value.endsWith('.base.eth')) {
-//             updateInputValue();
-//         }
-//     });
-
-//     ensInput.addEventListener('keydown', (event) => {
-//         const baseValue = ensInput.value.replace('.base.eth', '');
-//         const cursorPosition = ensInput.selectionStart;
-
-//         // Allow navigation keys and editing within the base value
-//         if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Backspace' || event.key === 'Delete') {
-//             if (cursorPosition > baseValue.length && (event.key === 'Backspace' || event.key === 'Delete')) {
-//                 event.preventDefault();
-//             } else {
-//                 setTimeout(() => {
-//                     updateInputValue();
-//                 }, 0);
-//             }
-//         }
-//     });
-// });

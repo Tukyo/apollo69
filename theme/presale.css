@@ -356,11 +356,6 @@ header, footer {
     background-color: var(--font-color);
     color: var(--blockchain-color);
 }
-#base-logo {
-    display: flex;
-    justify-content: flex-start;
-    max-width: 100px;
-}
 /* #endregion Referrals */
 /**/
 /* #region Leaderboard */
@@ -555,9 +550,6 @@ header, footer {
     }
     #total-contributions {
         text-align: center;
-    }
-    #base-logo {
-        margin: 0px auto;
     }
 }
 @media (max-width: 400px) {

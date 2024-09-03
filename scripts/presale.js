@@ -48,6 +48,15 @@ document.addEventListener('walletDisconnected', function () {
 function checkPresaleTimer() {
     const currentDate = new Date();
     const launchDateObject = new Date(launchDate);
+    const startDateObject = new Date(startDate);
+
+    // Calculate the time until the presale starts
+    const timeUntilStart = startDateObject - currentDate;
+
+    // Check if the presale has not begun
+    if (timeUntilStart > 0) {
+        return "The presale has not begun.";
+    }
 
     // Calculate the time until the presale is concluded
     const timeUntilLaunch = launchDateObject - currentDate;
@@ -525,6 +534,30 @@ function cancelContribution() {
     presaleButton.style.display = 'block';
     buyButton.style.display = 'block';
 }
+// Function to handle button presses when currentDate - startDate !< 0. This is added to the contribute buttons when the presale has not started.
+function presaleNotStarted() {
+    const randomAlert = [
+        "The presale has not started yet. Check back later!",
+        "The presale has not started. Please wait for the start date.",
+        "We know you are excited, but the presale has not started yet!",
+        "Once the presale has started, that button will work!",
+        "The presale has not started. Please be patient!",
+        "HODL on tight, presale hasn’t kicked off yet!",
+        "Whoa there, Satoshi! Presale is still brewing!",
+        "Chill your FOMO, let the dev cook...",
+        "Loading…presale blocks still syncing. Try again later!",
+        "The moon is still out of reach, presale hasn’t begun!",
+    ];
+
+    // Get a random index from the array
+    const randomIndex = Math.floor(Math.random() * randomAlert.length);
+
+    // Get the random alert message
+    const alertMessage = randomAlert[randomIndex];
+
+    // Show the alert message
+    showAlert('alert', alertMessage);
+}
 // #endregion Contribution Process
 
 // #region Referrals
@@ -539,19 +572,16 @@ async function populateReferralAddress() {
         if (validENS.test(referrerAddress)) {
             referrerAddress = await resolveENSName(referrerAddress);
             if (referrerAddress === null) {
-                referrerAddress = await resolveENSSubdomain(referrerAddress);
-                if (referrerAddress === null) {
-                    showAlert('alert', 'Could not resolve ENS to a valid Ethereum address. Reloading the page and removing referral link...', {
-                        dismissTime: 5000
-                    });
-                    // Remove the 'ref' parameter and reload the page
-                    urlParams.delete('ref');
+                showAlert('alert', 'Could not resolve ENS to a valid Ethereum address. Reloading the page and removing referral link...', {
+                    dismissTime: 5000
+                });
+                // Remove the 'ref' parameter and reload the page
+                urlParams.delete('ref');
 
-                    // setTimeout(() => {
-                    //     window.location.search = urlParams.toString();
-                    // }, 5000);
-                    // return;
-                }
+                setTimeout(() => {
+                    window.location.search = urlParams.toString();
+                }, 5000);
+                return;
             }
         } else {
             console.log('Referral address is not an ENS.');
@@ -612,7 +642,7 @@ async function generateReferralLink() {
                 // Otherwise, use the original wallet address
                 actualReferralLink = `${baseUrl}?ref=${referrerAddress}`;
 
-                // Contextually reveal the basename sign-up process
+                // Contextually reveal the ens sign-up process
                 ensContextualClaim();
             }
 
@@ -648,18 +678,18 @@ function ensContextualClaim() {
     ensPrompt.style.display = 'block';
     // Create the button animation
     const ensNames = [
-        '0xhappy.base.eth',
-        'tukyo.base.eth',
-        'jesse.base.eth',
-        'vitalik.base.eth',
-        'satoshi.base.eth',
-        'd3v3l0pr.base.eth',
-        'apollo69.base.eth',
-        'd0gecoin.base.eth',
-        'four.base.eth',
-        'wagmi.base.eth',
-        'm00n.base.eth',
-        'hodl.base.eth',
+        '0xhappy.eth',
+        'tukyo.eth',
+        'barmstrong.eth',
+        'vitalik.eth',
+        'satoshi.eth',
+        'd3v3l0pr.eth',
+        'apollo69.eth',
+        'd0gecoin.eth',
+        'coinbase.eth',
+        'wagmi.eth',
+        'm00n.eth',
+        'hodl.eth',
     ];
 
     setInterval(() => {
@@ -670,7 +700,7 @@ function ensContextualClaim() {
 
     // Add event click listener to the button
     ensButton.addEventListener('click', () => {
-        window.open('https://www.base.org/names?claim', '_blank');
+        window.open('https://app.ens.domains/', '_blank');
     });
 }
 // #endregion Referrals

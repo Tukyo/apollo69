@@ -23,6 +23,7 @@ var endpointMainnet = "https://eth-mainnet.g.alchemy.com/v2/wrx1n_eUgVvACBzfyKZK
 var isPresale = true;
 var presaleAddress = "0x4828515d2Fa448C9F64A149DF20470066A3d78b1";
 var presaleTarget = "200";
+var startDate = "2024-09-04T03:00:00Z";
 var launchDate = "2024-09-05T15:00:00Z";
 var minimumContribution = "0.1";
 var maximumContribution = "1";
@@ -191,13 +192,16 @@ document.addEventListener('DOMContentLoaded', async function () {
         presaleContainer.style.display = 'flex';
 
         presaleStatus = checkPresaleTimer();
+
         if (presaleStatus === "The presale has concluded.") {
             presaleButton.style.display = 'none';
+        } else if (presaleStatus === "The presale has not begun.")  {
+            presaleButton.textContent = 'Coming Soon';
+            presaleButton.style.display = 'block';
+            presaleButton.addEventListener('click', presaleNotStarted);
         } else {
             presaleButton.addEventListener('click', startContribution);
         }
-
-        presaleButton.addEventListener('click', startContribution);
 
         if (leaderboardEnabled) {
             leaderboard.style.display = 'flex';
@@ -239,6 +243,11 @@ document.addEventListener('DOMContentLoaded', async function () {
                 buyButton.textContent = 'Buy';
                 contractAddressValue.innerHTML = contractAddress;
 
+            } else if (presaleStatus === "The presale has not begun.")  {
+                buyButton.textContent = 'Coming Soon';
+                contractAddressValue.innerHTML = "The presale has not begun. Please check back later!";
+
+                buyButton.addEventListener('click', presaleNotStarted);
             } else {
                 if (isWalletEnabled) {
                     buyButton.textContent = 'Contribute';
@@ -265,6 +274,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                 buyButton.textContent = 'Coming Soon';
 
                 contractAddressValue.innerHTML = "The presale has concluded. Buying will be enabled shortly!";
+            } else if (presaleStatus === "The presale has not begun.")  {
+                buyButton.textContent = 'Coming Soon';
+
+                contractAddressValue.innerHTML = "The presale has not begun. Please check back later!";
             } else {
                 if (isWalletEnabled) {
                     buyButton.textContent = 'Contribute';
