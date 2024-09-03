@@ -648,11 +648,36 @@ async function generateReferralLink() {
 
             console.log("Generated Referral Link:", actualReferralLink);
 
-            // Copy the referral link to the clipboard
-            navigator.clipboard.writeText(actualReferralLink).then(() => {
-                showAlert('info', 'Referral link: ' + actualReferralLink + ' - copied to clipboard!');
+            const writeTextFallback = (text) => {
+                return new Promise((resolve, reject) => {
+                    let success = false;
+                    const listener = (e) => {
+                        e.clipboardData.setData("text/plain", text);
+                        e.preventDefault();
+                        success = true;
+                    };
+                    document.addEventListener("copy", listener);
+                    document.execCommand("copy");
+                    document.removeEventListener("copy", listener);
+                    success ? resolve() : reject();
+                });
+            };
+
+            // Attempt to copy the referral link to the clipboard
+            window.navigator.clipboard.writeText(actualReferralLink).then(() => {
+                showAlert('info', 'Referral link: ' + actualReferralLink + ' - copied to clipboard!', {
+                    dismissTime: 10000
+                });
             }).catch(err => {
                 console.error('Failed to copy referral link: ', err);
+                // Fallback in case of failure
+                writeTextFallback(actualReferralLink).then(() => {
+                    showAlert('info', 'Referral link: ' + actualReferralLink + ' - copied to clipboard!', {
+                        dismissTime: 10000
+                    });
+                }).catch(fallbackErr => {
+                    console.error('Fallback failed to copy referral link: ', fallbackErr);
+                });
             });
 
             // Hide the loader
@@ -663,7 +688,7 @@ async function generateReferralLink() {
             referralLink.value = actualReferralLink;
             referralLink.style.display = 'block';
 
-            await new Promise(resolve => setTimeout(resolve, 10000));
+            await new Promise(resolve => setTimeout(resolve, 20000));
 
             referralLink.style.display = 'none';
 
@@ -674,6 +699,7 @@ async function generateReferralLink() {
         showAlert('alert', 'Please connect your wallet.');
     }
 }
+
 function ensContextualClaim() {
     ensPrompt.style.display = 'block';
     // Create the button animation
