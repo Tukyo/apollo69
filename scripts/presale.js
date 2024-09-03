@@ -648,19 +648,29 @@ async function generateReferralLink() {
 
             console.log("Generated Referral Link:", actualReferralLink);
 
-            const writeTextFallback = (text) => {
-                return new Promise((resolve, reject) => {
-                    let success = false;
-                    const listener = (e) => {
-                        e.clipboardData.setData("text/plain", text);
-                        e.preventDefault();
-                        success = true;
-                    };
-                    document.addEventListener("copy", listener);
-                    document.execCommand("copy");
-                    document.removeEventListener("copy", listener);
-                    success ? resolve() : reject();
-                });
+            const fallbackCopyTextToClipboard = (text) => {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                // Avoid scrolling to bottom
+                textArea.style.top = "0";
+                textArea.style.left = "0";
+                textArea.style.position = "fixed";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        showAlert('info', 'Referral link: ' + text + ' - copied to clipboard!', {
+                            dismissTime: 10000
+                        });
+                    } else {
+                        console.error('Fallback: Copying text command was unsuccessful');
+                    }
+                } catch (err) {
+                    console.error('Fallback: Unable to copy', err);
+                }
+                document.body.removeChild(textArea);
             };
 
             // Attempt to copy the referral link to the clipboard
@@ -671,13 +681,7 @@ async function generateReferralLink() {
             }).catch(err => {
                 console.error('Failed to copy referral link: ', err);
                 // Fallback in case of failure
-                writeTextFallback(actualReferralLink).then(() => {
-                    showAlert('info', 'Referral link: ' + actualReferralLink + ' - copied to clipboard!', {
-                        dismissTime: 10000
-                    });
-                }).catch(fallbackErr => {
-                    console.error('Fallback failed to copy referral link: ', fallbackErr);
-                });
+                fallbackCopyTextToClipboard(actualReferralLink);
             });
 
             // Hide the loader
