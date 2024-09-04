@@ -35,7 +35,7 @@ var leaderboardCheckInterval = 1000;
 var maxLeaderboardRows = 100;
 var isReferralEnabled = true;
 var isBuyingEnabled = true;
-var buyLink = "https://app.uniswap.org/swap?outputCurrency=0x21b9D428EB20FA075A29d51813E57BAb85406620";
+var buyLink = "https://app.uniswap.org/swap?outputCurrency=";
 var buyDescription = "$APOLLO is a fungible cryptocurrency with no intrinsic value or expectation of financial return. It is a simple meme coin cooked up for the culture. Contrary to what you see online where everyone posts Ws and very few Ls on social media, most ppl lose money so always consider what you can afford to lose before buying $APOLLO. We are only here to entertain and to share community vibes.";
 var theme = "presale";
 var blockchainColor = "#0151fd"

@@ -7,7 +7,7 @@ async function populateLeaderboard() {
     const storedExpiry = localStorage.getItem(LEADERBOARD_EXPIRY_KEY);
     const now = new Date().getTime();
 
-    if (storedData && storedExpiry && now - storedExpiry < 1 * 60 * 60 * 1000) {
+    if (storedData && storedExpiry && now - storedExpiry < 1 * 60 * 1000) {
         console.log('Loading leaderboard from localStorage');
         const leaderboardData = JSON.parse(storedData);
         renderLeaderboard(leaderboardData);
