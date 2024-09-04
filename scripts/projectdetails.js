@@ -63,8 +63,8 @@ var navigationLinks = [
         link: "#tokenomics",
     },
 ];
-var telegramLink = "https://t.me/tukyowave";
-var twitterLink = "https://twitter.com/tukyowave";
+var telegramLink = "https://t.me/APOLLO69PORTAL";
+var twitterLink = "https://x.com/Apollo69onbase";
 var discordLink = "None";
 var githubLink = "None";
 var extraLink = "None";
