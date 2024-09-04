@@ -1,13 +1,15 @@
 const LEADERBOARD_STORAGE_KEY = 'leaderboardData';
 const LEADERBOARD_EXPIRY_KEY = 'leaderboardExpiry';
 
+const storageTimeout = 1 * 60 * 1000; // 1 minute
+
 async function populateLeaderboard() {
     // Check if the data is in localStorage and is fresh
     const storedData = localStorage.getItem(LEADERBOARD_STORAGE_KEY);
     const storedExpiry = localStorage.getItem(LEADERBOARD_EXPIRY_KEY);
     const now = new Date().getTime();
 
-    if (storedData && storedExpiry && now - storedExpiry < 1 * 60 * 1000) {
+    if (storedData && storedExpiry && now - storedExpiry < storageTimeout) {
         console.log('Loading leaderboard from localStorage');
         const leaderboardData = JSON.parse(storedData);
         renderLeaderboard(leaderboardData);
@@ -71,14 +73,23 @@ async function populateLeaderboard() {
             }
         }
 
-        const sortedSenders = Object.entries(senders)
-            .sort(([, a], [, b]) => b - a)
+        // Combine senders and referral counts into a single array
+        const combinedData = Object.entries(senders).map(([sender, amount]) => {
+            return {
+                sender,
+                amount,
+                referrals: referralCounts[sender] || 0 // Default to 0 if no referrals
+            };
+        });
+
+        const sortedData = combinedData
+            .sort((a, b) => b.referrals - a.referrals || b.amount - a.amount)
             .slice(0, maxLeaderboardRows);
 
         leaderboardList.innerHTML = ''; // Clear previous list
 
         // Populate the leaderboard and store in the array
-        for (const [sender, amount] of sortedSenders) {
+        for (const { sender, amount, referrals } of sortedData) {
             let adjustedAmount = amount;
 
             if (amount > maximumContribution && maximumContribution != 0) {
@@ -86,12 +97,10 @@ async function populateLeaderboard() {
             } else if (amount < minimumContribution) {
                 continue; // Skip this entry if below minimumContribution
             }
-            
+
             // Log the adjustedAmount to ensure it's correct
             console.log(`Adjusted Amount for ${sender}: ${adjustedAmount}`);
-            
             const finalAdjustedAmount = parseFloat(adjustedAmount).toFixed(4);
-            
             const amountNum = parseFloat(adjustedAmount);
             let usdAmount = '';
 
@@ -99,10 +108,6 @@ async function populateLeaderboard() {
                 usdAmount = ` ($${(amountNum * ethUsdPrice).toFixed(2)})`;
             }
 
-            // Retrieve the referral count for the sender
-            const referralCount = referralCounts[sender] || 0;
-
-            // Resolve ENS name for the sender address
             const ensName = await resolveAddressToENS(sender);
             let displayName = ensName ? ensName : truncateAddress(sender, 6);
 
@@ -114,7 +119,7 @@ async function populateLeaderboard() {
                 position: leaderboardData.length + 1,
                 wallet: displayName,
                 amount: finalAdjustedAmount + ` ${nativeCurrencySymbol}${usdAmount}`,
-                points: referralCount
+                points: referrals
             };
 
             leaderboardData.push(listItem);
@@ -145,7 +150,7 @@ async function populateLeaderboard() {
         localStorage.setItem(LEADERBOARD_STORAGE_KEY, JSON.stringify(leaderboardData));
         localStorage.setItem(LEADERBOARD_EXPIRY_KEY, now.toString());
 
-        console.log("Top senders:", sortedSenders);
+        console.log('Leaderboard data successfully loaded and stored for', storageTimeout, 'ms');
     } catch (error) {
         console.error('Error fetching transactions:', error);
         leaderboardList.innerHTML = 'Error fetching transactions...';
