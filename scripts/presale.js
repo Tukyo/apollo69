@@ -125,6 +125,16 @@ async function getUserContributions() {
 
                     displayUserContributions(totalContributionInEthNumber);
                     console.log('Connected user has contributed:', totalContributionInEthNumber + ` ${nativeCurrencySymbol}`);
+
+                    if (totalContributionInEth >= maximumContribution) {
+                        presaleButton.innerText = 'Contribution Limit Reached';
+                        buyButton.innerText = 'Contribution Limit Reached';
+                        presaleButton.disabled = true;
+                        buyButton.disabled = true;
+                        showAlert('alert', `You have contributed the maximum allowed amount of ${maximumContribution} ${nativeCurrencySymbol}.`, {
+                                dismissTime: 10000,
+                            });
+                    }
                 } else {
                     console.log('No contributions from user found for the presale address.');
                     displayUserContributions(0); // No contributions
