@@ -71,10 +71,13 @@ function checkPresaleTimer() {
         return "The presale has concluded.";
     }
 
-    // Format the time difference
-    const formattedTime = `Time Left: ${days} Days ${hours} Hours ${minutes} Minutes ${seconds} Seconds`;
-
-    return formattedTime;
+    if (days === 1) {
+        const formattedTime = `Time Left: ${days} Day ${hours} Hours ${minutes} Minutes ${seconds} Seconds`;
+        return formattedTime;
+    } else {
+        const formattedTime = `Time Left: ${days} Days ${hours} Hours ${minutes} Minutes ${seconds} Seconds`;
+        return formattedTime;
+    }
 }
 function displayTotalContributions(balance) {
     const totalContributionsElement = document.getElementById('total-contributions');
