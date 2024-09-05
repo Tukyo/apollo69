@@ -10,7 +10,7 @@ var nativeCurrencySymbol = "ETH";
 var nativeCurrencyDecimals = 18;
 var blockExplorerURL = "https://basescan.org";
 var isWalletEnabled = true;
-var contractAddress = "0xA66DF2f59C6e37E66a063EE3A82eA63C0D521d14";
+var contractAddress = "";
 var totalSupply = "7,201,969,690";
 var tokenName = "APOLLO";
 var tokenSymbol = "APOLLO";
@@ -127,6 +127,7 @@ let validWalletAddress = /^0x[a-fA-F0-9]{40}$/;
 let validENS = /^([a-z0-9-]+\.)*eth$/i;
 
 let chainlinkUSDPriceFeed = "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419";
+
 document.addEventListener('DOMContentLoaded', async function () {
     window.addEventListener('resize', handleResize);
     projectTitleValue = document.getElementById('project-title-value')
